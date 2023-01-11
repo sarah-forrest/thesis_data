@@ -1,0 +1,217 @@
+---
+title: "NYC COVID-19 Test Positivity by Modified Zip Code Tabulation Area (modZCTA)"
+author: "Sarah Forrest"
+date: '`r format(Sys.time(), "%m-%d-%Y")`'
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, message = FALSE, dpi = 300, fig.width = 7)
+
+library(tidyverse)
+library(httr)
+library(lubridate)
+```
+
+# Create Dataset 
+
+Read in and tidy `caserate-by-modzcta.csv`, `testrate-by-modzcta.csv`, `percentpositive-by-modzcta.csv`, and `populationestimates-by-modzcta.csv`:
+
+```{r}
+caserate_df = 
+  read_csv("data/raw/caserate-by-modzcta.csv") %>%
+  janitor::clean_names() %>%
+  select(week_ending, caserate_10001:caserate_11697) %>%
+  pivot_longer(
+    starts_with("caserate"),
+    names_to = "modzcta",
+    names_prefix = "caserate_", 
+    values_to = "caserate_100k"
+  )
+
+testrate_df = 
+  read_csv("data/raw/testrate-by-modzcta.csv") %>%
+  janitor::clean_names() %>%
+  select(week_ending, testrate_10001:testrate_11697) %>%
+  pivot_longer(
+    starts_with("testrate"),
+    names_to = "modzcta",
+    names_prefix = "testrate_", 
+    values_to = "testrate_100k"
+  )
+
+pctpos_df =
+read_csv("data/raw/percentpositive-by-modzcta.csv") %>%
+  janitor::clean_names() %>%
+  select(week_ending, pctpos_10001:pctpos_11697) %>%
+  pivot_longer(
+    starts_with("pctpos"),
+    names_to = "modzcta",
+    names_prefix = "pctpos_", 
+    values_to = "pctpos"
+  )
+
+modzcta_pop_df = 
+  read_csv("data/raw/populationestimates-by-modzcta.csv") %>% 
+  janitor::clean_names() %>%
+  select(modzcta, pop_est) %>%
+  slice(1:(n() - 1))
+```
+
+Merge `caserate-by-modzcta.csv`, `testrate-by-modzcta.csv`, and `percentpositive-by-modzcta.csv` by `modzcta` and `week_ending`:
+
+```{r}
+merged_df = 
+  list(caserate_df, testrate_df, pctpos_df) %>% 
+  reduce(full_join, by = c("week_ending", "modzcta")) %>% 
+  mutate(
+    modzcta = as.numeric(modzcta),
+    week_ending = as.Date(week_ending, format = "%m/%d/%Y"))
+```
+
+Merge modZCTA population estimates to the dataframe by `modzcta`:
+
+```{r}
+merged_df = full_join(merged_df, modzcta_pop_df)
+```
+
+Restrict study period to the the weeks ending August 08, 2020 to October 10, 2020:
+
+```{r}
+merged_df = 
+  merged_df %>%
+  filter(week_ending <= '2020-10-10')
+```
+
+Calculate `casecount`, `testcount`, and `testpos` (test positivity) and reorder variables:
+
+```{r}
+merged_df = 
+  merged_df %>% 
+  mutate(
+    casecount = caserate_100k * pop_est / 100000,
+    testcount = testrate_100k * pop_est / 100000,
+    testpos = casecount / testcount * 100) %>%
+  select(week_ending, modzcta, pop_est, casecount, caserate_100k, testcount, testrate_100k, pctpos, testpos)
+```
+
+Export dataframe as a CSV file: 
+
+```{r}
+final_df =
+  merged_df %>%
+  select(-pctpos)
+
+# write.csv(final_df,"data/casecount-testcount-testpos-by-modzcta.csv", row.names = TRUE)
+```
+
+# Create Files for SaTScan Analysis
+
+Case File:
+
+```{r}
+case_file = 
+  final_df %>% 
+  select(modzcta, casecount, week_ending) %>% 
+  mutate(casecount = round(casecount, digits = 0))
+
+write.csv(case_file,"data/satscan/case_file.csv", row.names = TRUE)
+```
+
+Population File:
+
+```{r}
+pop_file = 
+  final_df %>% 
+  select(modzcta, week_ending, testcount) %>% 
+  mutate(testcount = round(testcount, digits = 0))
+
+write.csv(pop_file,"data/satscan/population_file.csv", row.names = TRUE)
+```
+
+# Create Files for ArcGIS Emerging Hotspot Analysis
+
+```{r}
+ehsa_data = 
+  final_df %>% 
+  select(modzcta, week_ending, testpos, casecount, testcount) %>% 
+  mutate(
+    casecount = round(casecount, digits = 0),
+    testcount = round(testcount, digits = 0))
+
+write.csv(pop_file,"data/arcgis/ehsa_data.csv", row.names = TRUE)
+```
+
+# Exploratory Data Analysis
+
+Average Percent Test Positivity across all ModZCTAs over Study Period:
+
+```{r}
+final_df %>% 
+  group_by(week_ending) %>%
+  summarize(mean_testpos = mean(testpos)) %>%
+  ggplot(aes(x = week_ending, y = mean_testpos)) + 
+  theme(axis.text.x = element_text(angle = 90,hjust = 1)) + geom_line(show.legend = FALSE) +
+  ggtitle("Avg NYC COVID-19 Test % Positivity by Week From 8/2/2020 to 10/10/2020") + 
+  labs(
+    x = "week ending date",
+    y = "mean test % positivity")
+```
+
+Percent Test Positivity for by ModZCTA over Study Period:
+
+```{r}
+final_df %>% 
+  mutate(modzcta = as.character(modzcta)) %>% 
+  ggplot(aes(x = week_ending, y = testpos, group = modzcta, color = modzcta)) + 
+  theme(axis.text.x = element_text(angle = 90,hjust = 1)) + geom_line(show.legend = FALSE) +
+  ggtitle("COVID-19 Test % Positivity by ModZCTA by Week From 8/2/2020 to 10/10/2020") + 
+  labs(
+    x = "week ending date",
+    y = "mean test % positivity")
+```
+
+## Percent Test Positivity for Each ModZCTA over Study Period
+
+Create dataframe for use in plots: 
+
+```{r}
+plot_df = 
+  merged_df %>% 
+  rename(
+    pctpos_reported = pctpos,
+    pctpos_calculated = testpos) %>% 
+  pivot_longer(
+    starts_with("pctpos"),
+    names_to = "group",
+    names_prefix = "pctpos_", 
+    values_to = "value")
+```
+
+Create function to plot the % positive value (from `percentpositive-by-modzcta.csv`) vs. my calculated casecount/testcount*100 value for each modZCTA over the study period:
+
+```{r}
+plot_modzcta = function(modzcta_entry) {
+
+plot_df %>% 
+  filter(modzcta == modzcta_entry) %>% 
+  ggplot(aes(x = week_ending, y = value, group = group, color = group)) + 
+  geom_line(alpha = 0.7) +
+  ylim(0, 9) +
+  labs(
+    title = modzcta_entry,
+    x = "week ending date",
+    y = "test % positivity") +
+  scale_color_hue(labels = c("calculated" = "casecount/testcount*100", "reported" = "% positive"))
+  
+}
+
+modzcta_list = modzcta_pop_df$modzcta
+
+for (i in 1:177) {
+  
+  plot = plot_modzcta(modzcta_list[[i]])
+  print(plot)
+  
+}
+```
