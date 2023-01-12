@@ -1,0 +1,47 @@
+---
+title: "ZIP Code Tabulation Area (ZCTA) Relationship File Generation"
+author: "Sarah Forrest"
+date: '`r format(Sys.time(), "%Y-%m-%d")`'
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The following code generates a NYC ZIP code tabulation area (ZCTA) relationship file. It was developed by GitHub user gmculp at the NYC Department of Health and Mental Hygiene. It uses the `download_USCB_TIGER_files.R` script, a function to download necessary files from USCB TIGER website, and the `generate_USCB_ZCTA_network_file.R` script, a function to generate a ZIP code tabulation area (ZCTA) relationship file in CSV format. Includes optional logical arguments to enable bridge connectivity, omit connectivity with parks and other open spaces and omit connectivity with unpopulated ZCTA.
+
+```{r}
+source("download_USCB_TIGER_files.R")
+source("generate_USCB_ZCTA_network_file.R")
+
+# Specify place to store USCB TIGER files
+USCB_TIGER.path <- "relationship_files"
+
+# Specify data table containing state and county FIPS codes
+FIPS_dt <- data.table(state = rep("36", 5), county = c("061","005","047","081","085"))
+
+# Download all necessary files from USCB TIGER website (you only have to do this once)
+download_USCB_TIGER_files(FIPS_dt, USCB_TIGER.path)
+
+# Generate ZIP code tabulation area relationship file
+ZCTA_pairs_dt <- generate_USCB_ZCTA_network_file(FIPS_dt, USCB_TIGER.path, omit.park_openspace = TRUE, omit.unpopulated = TRUE, use.bridges = TRUE)
+
+coord_file = 
+  read_csv("data/satscan/coordinates_file.csv")
+
+modzcta_list = 
+  coord_file %>% 
+  pull(modzcta) %>% 
+  as.list()
+
+ZCTA_pairs_dt$ZCTA5CE10.1[!(ZCTA_pairs_dt$ZCTA5CE10.1 %in% modzcta_list)] <- NA
+ZCTA_pairs_dt$ZCTA5CE10.2[!(ZCTA_pairs_dt$ZCTA5CE10.2 %in% modzcta_list)] <- NA
+
+# Omit rows with NA values
+ZCTA_pairs_dt =
+  ZCTA_pairs_dt %>% 
+  na.omit()
+
+write.csv(ZCTA_pairs_dt,"data/zcta_pairs_relationship_file.csv", row.names = TRUE)
+```
