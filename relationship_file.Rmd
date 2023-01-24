@@ -51,5 +51,5 @@ relationship_file = ZCTA_pairs_dt %>%
     zcta2 = zcta5ce10_2) %>% 
   filter(!(zcta1 == zcta2))
     
-# write.csv(relationship_file,"data/zcta_pairs_relationship_file_new.csv", row.names = TRUE)
+# write.csv(relationship_file,"data/zcta_pairs_relationship_file.csv", row.names = TRUE)
 ```
