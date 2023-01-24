@@ -28,7 +28,7 @@ download_USCB_TIGER_files(FIPS_dt, USCB_TIGER.path)
 ZCTA_pairs_dt <- generate_USCB_ZCTA_network_file(FIPS_dt, USCB_TIGER.path, omit.park_openspace = TRUE, omit.unpopulated = TRUE, use.bridges = TRUE)
 
 coord_file = 
-  read_csv("data/satscan/coordinates_file.csv")
+  read_csv("data/satscan/coordinate_file.csv")
 
 modzcta_list = 
   coord_file %>% 
@@ -43,5 +43,13 @@ ZCTA_pairs_dt =
   ZCTA_pairs_dt %>% 
   na.omit()
 
-write.csv(ZCTA_pairs_dt,"data/zcta_pairs_relationship_file.csv", row.names = TRUE)
+relationship_file = ZCTA_pairs_dt %>% 
+  janitor::clean_names() %>% 
+  select(-type) %>% 
+  rename(
+    zcta1 = zcta5ce10_1, 
+    zcta2 = zcta5ce10_2) %>% 
+  filter(!(zcta1 == zcta2))
+    
+# write.csv(relationship_file,"data/zcta_pairs_relationship_file_new.csv", row.names = TRUE)
 ```
