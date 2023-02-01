@@ -179,7 +179,7 @@ ehsa_data =
     # casecount = round(casecount, digits = 0),
     # testcount = round(testcount, digits = 0))
 
-write.csv(pop_file,"data/arcgis/ehsa_data.csv", row.names = TRUE)
+write.csv(ehsa_data,"data/arcgis/ehsa_data.csv", row.names = TRUE)
 ```
 
 # Exploratory Data Analysis
