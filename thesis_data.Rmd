@@ -143,138 +143,27 @@ pop_file =
 # write.csv(pop_file,"data/satscan/population_file.csv", row.names = TRUE)
 ```
 
-## Five-Week Study Period: 8/2/2020 - 9/5/2020
+
+## Retrospective Analysis
 
 Case File:
 
 ```{r}
-case_file_5wk = 
+case_file_retro = 
   case_file %>% 
-  filter(week_ending <= '2020-09-05')
+  filter(week_ending <= '2020-08-22')
 
-# write.csv(case_file_5wk,"data/satscan/case_file_5wk.csv", row.names = TRUE)
+# write.csv(case_file_retro,"data/satscan/case_file_retro.csv", row.names = TRUE)
 ```
 
 Population File:
 
 ```{r}
-pop_file_5wk = 
+pop_file_retro = 
   pop_file %>% 
-  filter(week_ending <= '2020-09-05')
+  filter(week_ending <= '2020-08-22')
 
-# write.csv(pop_file_5wk,"data/satscan/population_file_5wk.csv", row.names = TRUE)
-```
-
-## Six-Week Study Period: 8/2/2020 - 9/12/2020
-
-Case File:
-
-```{r}
-case_file_6wk = 
-  case_file %>% 
-  filter(week_ending <= '2020-09-12')
-
-# write.csv(case_file_6wk,"data/satscan/case_file_6wk.csv", row.names = TRUE)
-```
-
-Population File:
-
-```{r}
-pop_file_6wk = 
-  pop_file %>% 
-  filter(week_ending <= '2020-09-12')
-
-# write.csv(pop_file_6wk,"data/satscan/population_file_6wk.csv", row.names = TRUE)
-```
-
-## Seven-Week Study Period: 8/2/2020 - 9/19/2020
-
-Case File:
-
-```{r}
-case_file_7wk = 
-  case_file %>% 
-  filter(week_ending <= '2020-09-19')
-
-# write.csv(case_file_7wk,"data/satscan/case_file_7wk.csv", row.names = TRUE)
-```
-
-Population File:
-
-```{r}
-pop_file_7wk = 
-  pop_file %>% 
-  filter(week_ending <= '2020-09-19')
-
-# write.csv(pop_file_7wk,"data/satscan/population_file_7wk.csv", row.names = TRUE)
-```
-
-## Eight-Week Study Period: 8/2/2020 - 9/26/2020
-
-Case File:
-
-```{r}
-case_file_8wk = 
-  case_file %>% 
-  filter(week_ending <= '2020-09-26')
-
-# write.csv(case_file_8wk,"data/satscan/case_file_8wk.csv", row.names = TRUE)
-```
-
-Population File:
-
-```{r}
-pop_file_8wk = 
-  pop_file %>% 
-  filter(week_ending <= '2020-09-26')
-
-# write.csv(pop_file_8wk,"data/satscan/population_file_8wk.csv", row.names = TRUE)
-```
-
-## Nine-Week Study Period I: 8/2/2020 - 10/3/2020
-
-Case File:
-
-```{r}
-case_file_9wki = 
-  case_file %>% 
-  filter(week_ending <= '2020-10-03')
-
-# write.csv(case_file_9wki,"data/satscan/case_file_9wki.csv", row.names = TRUE)
-```
-
-Population File:
-
-```{r}
-pop_file_9wki = 
-  pop_file %>% 
-  filter(week_ending <= '2020-10-03')
-
-# write.csv(pop_file_9wki,"data/satscan/population_file_9wki.csv", row.names = TRUE)
-```
-
-## Nine-Week Study Period II: 8/9/2020 - 10/10/2020
-
-Case File:
-
-```{r}
-case_file_9wkii = 
-  case_file %>% 
-  filter(week_ending <= '2020-10-10') %>% 
-  filter(week_ending >= '2020-08-09')
-
-# write.csv(case_file_9wkii,"data/satscan/case_file_9wkii.csv", row.names = TRUE)
-```
-
-Population File:
-
-```{r}
-pop_file_9wkii = 
-  pop_file %>% 
-  filter(week_ending <= '2020-10-10') %>% 
-  filter(week_ending >= '2020-08-09')
-
-# write.csv(pop_file_9wkii,"data/satscan/population_file_9wkii.csv", row.names = TRUE)
+# write.csv(pop_file_retro,"data/satscan/pop_file_retro.csv", row.names = TRUE)
 ```
 
 
@@ -284,11 +173,13 @@ pop_file_9wkii =
 ehsa_data = 
   final_df %>% 
   select(modzcta, week_ending, testpos, casecount, testcount) %>% 
-  mutate(
-    casecount = round(casecount, digits = 0),
-    testcount = round(testcount, digits = 0))
+  mutate(modzcta = as.character(modzcta))
 
-# write.csv(pop_file,"data/arcgis/ehsa_data.csv", row.names = TRUE)
+  # mutate(
+    # casecount = round(casecount, digits = 0),
+    # testcount = round(testcount, digits = 0))
+
+write.csv(pop_file,"data/arcgis/ehsa_data.csv", row.names = TRUE)
 ```
 
 # Exploratory Data Analysis

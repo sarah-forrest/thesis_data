@@ -2,7 +2,7 @@ NYC COVID-19 Test Positivity by Modified Zip Code Tabulation Area
 (modZCTA)
 ================
 Sarah Forrest
-01-23-2023
+02-01-2023
 
 # Create Dataset
 
@@ -139,138 +139,26 @@ pop_file =
 # write.csv(pop_file,"data/satscan/population_file.csv", row.names = TRUE)
 ```
 
-## Five-Week Study Period: 8/2/2020 - 9/5/2020
+## Retrospective Analysis
 
 Case File:
 
 ``` r
-case_file_5wk = 
+case_file_retro = 
   case_file %>% 
-  filter(week_ending <= '2020-09-05')
+  filter(week_ending <= '2020-08-22')
 
-# write.csv(case_file_5wk,"data/satscan/case_file_5wk.csv", row.names = TRUE)
+# write.csv(case_file_retro,"data/satscan/case_file_retro.csv", row.names = TRUE)
 ```
 
 Population File:
 
 ``` r
-pop_file_5wk = 
+pop_file_retro = 
   pop_file %>% 
-  filter(week_ending <= '2020-09-05')
+  filter(week_ending <= '2020-08-22')
 
-# write.csv(pop_file_5wk,"data/satscan/population_file_5wk.csv", row.names = TRUE)
-```
-
-## Six-Week Study Period: 8/2/2020 - 9/12/2020
-
-Case File:
-
-``` r
-case_file_6wk = 
-  case_file %>% 
-  filter(week_ending <= '2020-09-12')
-
-# write.csv(case_file_6wk,"data/satscan/case_file_6wk.csv", row.names = TRUE)
-```
-
-Population File:
-
-``` r
-pop_file_6wk = 
-  pop_file %>% 
-  filter(week_ending <= '2020-09-12')
-
-# write.csv(pop_file_6wk,"data/satscan/population_file_6wk.csv", row.names = TRUE)
-```
-
-## Seven-Week Study Period: 8/2/2020 - 9/19/2020
-
-Case File:
-
-``` r
-case_file_7wk = 
-  case_file %>% 
-  filter(week_ending <= '2020-09-19')
-
-# write.csv(case_file_7wk,"data/satscan/case_file_7wk.csv", row.names = TRUE)
-```
-
-Population File:
-
-``` r
-pop_file_7wk = 
-  pop_file %>% 
-  filter(week_ending <= '2020-09-19')
-
-# write.csv(pop_file_7wk,"data/satscan/population_file_7wk.csv", row.names = TRUE)
-```
-
-## Eight-Week Study Period: 8/2/2020 - 9/26/2020
-
-Case File:
-
-``` r
-case_file_8wk = 
-  case_file %>% 
-  filter(week_ending <= '2020-09-26')
-
-# write.csv(case_file_8wk,"data/satscan/case_file_8wk.csv", row.names = TRUE)
-```
-
-Population File:
-
-``` r
-pop_file_8wk = 
-  pop_file %>% 
-  filter(week_ending <= '2020-09-26')
-
-# write.csv(pop_file_8wk,"data/satscan/population_file_8wk.csv", row.names = TRUE)
-```
-
-## Nine-Week Study Period I: 8/2/2020 - 10/3/2020
-
-Case File:
-
-``` r
-case_file_9wki = 
-  case_file %>% 
-  filter(week_ending <= '2020-10-03')
-
-# write.csv(case_file_9wki,"data/satscan/case_file_9wki.csv", row.names = TRUE)
-```
-
-Population File:
-
-``` r
-pop_file_9wki = 
-  pop_file %>% 
-  filter(week_ending <= '2020-10-03')
-
-# write.csv(pop_file_9wki,"data/satscan/population_file_9wki.csv", row.names = TRUE)
-```
-
-## Nine-Week Study Period II: 8/9/2020 - 10/10/2020
-
-Case File:
-
-``` r
-case_file_9wkii = 
-  case_file %>% 
-  filter(week_ending <= '2020-10-10') %>% 
-  filter(week_ending >= '2020-08-09')
-
-# write.csv(case_file_9wkii,"data/satscan/case_file_9wkii.csv", row.names = TRUE)
-```
-
-Population File:
-
-``` r
-pop_file_9wkii = 
-  pop_file %>% 
-  filter(week_ending <= '2020-10-10') %>% 
-  filter(week_ending >= '2020-08-09')
-
-# write.csv(pop_file_9wkii,"data/satscan/population_file_9wkii.csv", row.names = TRUE)
+# write.csv(pop_file_retro,"data/satscan/pop_file_retro.csv", row.names = TRUE)
 ```
 
 # Create Files for ArcGIS Emerging Hotspot Analysis
@@ -279,11 +167,13 @@ pop_file_9wkii =
 ehsa_data = 
   final_df %>% 
   select(modzcta, week_ending, testpos, casecount, testcount) %>% 
-  mutate(
-    casecount = round(casecount, digits = 0),
-    testcount = round(testcount, digits = 0))
+  mutate(modzcta = as.character(modzcta))
 
-# write.csv(pop_file,"data/arcgis/ehsa_data.csv", row.names = TRUE)
+  # mutate(
+    # casecount = round(casecount, digits = 0),
+    # testcount = round(testcount, digits = 0))
+
+write.csv(pop_file,"data/arcgis/ehsa_data.csv", row.names = TRUE)
 ```
 
 # Exploratory Data Analysis
@@ -302,7 +192,7 @@ final_df %>%
     y = "mean test % positivity")
 ```
 
-![](thesis_data_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](thesis_data_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 Percent Test Positivity for by ModZCTA over Study Period:
 
@@ -317,7 +207,7 @@ final_df %>%
     y = "mean test % positivity")
 ```
 
-![](thesis_data_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](thesis_data_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 ## Percent Test Positivity for Each ModZCTA over Study Period
 
@@ -366,4 +256,4 @@ for (i in 1:177) {
 }
 ```
 
-![](thesis_data_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-2.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-3.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-4.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-5.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-6.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-7.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-8.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-9.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-10.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-11.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-12.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-13.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-14.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-15.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-16.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-17.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-18.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-19.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-20.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-21.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-22.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-23.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-24.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-25.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-26.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-27.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-28.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-29.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-30.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-31.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-32.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-33.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-34.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-35.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-36.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-37.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-38.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-39.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-40.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-41.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-42.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-43.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-44.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-45.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-46.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-47.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-48.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-49.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-50.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-51.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-52.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-53.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-54.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-55.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-56.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-57.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-58.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-59.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-60.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-61.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-62.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-63.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-64.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-65.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-66.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-67.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-68.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-69.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-70.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-71.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-72.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-73.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-74.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-75.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-76.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-77.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-78.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-79.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-80.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-81.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-82.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-83.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-84.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-85.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-86.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-87.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-88.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-89.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-90.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-91.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-92.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-93.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-94.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-95.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-96.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-97.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-98.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-99.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-100.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-101.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-102.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-103.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-104.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-105.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-106.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-107.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-108.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-109.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-110.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-111.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-112.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-113.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-114.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-115.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-116.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-117.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-118.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-119.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-120.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-121.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-122.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-123.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-124.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-125.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-126.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-127.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-128.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-129.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-130.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-131.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-132.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-133.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-134.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-135.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-136.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-137.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-138.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-139.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-140.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-141.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-142.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-143.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-144.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-145.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-146.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-147.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-148.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-149.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-150.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-151.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-152.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-153.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-154.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-155.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-156.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-157.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-158.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-159.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-160.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-161.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-162.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-163.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-164.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-165.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-166.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-167.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-168.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-169.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-170.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-171.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-172.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-173.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-174.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-175.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-176.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-26-177.png)<!-- -->
+![](thesis_data_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-2.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-3.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-4.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-5.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-6.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-7.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-8.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-9.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-10.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-11.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-12.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-13.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-14.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-15.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-16.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-17.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-18.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-19.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-20.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-21.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-22.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-23.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-24.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-25.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-26.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-27.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-28.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-29.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-30.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-31.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-32.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-33.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-34.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-35.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-36.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-37.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-38.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-39.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-40.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-41.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-42.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-43.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-44.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-45.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-46.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-47.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-48.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-49.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-50.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-51.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-52.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-53.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-54.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-55.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-56.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-57.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-58.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-59.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-60.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-61.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-62.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-63.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-64.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-65.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-66.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-67.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-68.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-69.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-70.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-71.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-72.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-73.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-74.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-75.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-76.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-77.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-78.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-79.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-80.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-81.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-82.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-83.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-84.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-85.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-86.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-87.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-88.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-89.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-90.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-91.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-92.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-93.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-94.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-95.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-96.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-97.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-98.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-99.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-100.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-101.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-102.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-103.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-104.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-105.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-106.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-107.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-108.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-109.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-110.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-111.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-112.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-113.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-114.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-115.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-116.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-117.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-118.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-119.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-120.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-121.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-122.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-123.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-124.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-125.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-126.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-127.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-128.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-129.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-130.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-131.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-132.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-133.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-134.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-135.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-136.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-137.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-138.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-139.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-140.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-141.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-142.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-143.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-144.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-145.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-146.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-147.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-148.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-149.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-150.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-151.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-152.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-153.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-154.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-155.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-156.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-157.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-158.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-159.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-160.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-161.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-162.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-163.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-164.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-165.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-166.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-167.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-168.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-169.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-170.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-171.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-172.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-173.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-174.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-175.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-176.png)<!-- -->![](thesis_data_files/figure-gfm/unnamed-chunk-16-177.png)<!-- -->
