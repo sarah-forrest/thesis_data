@@ -11,6 +11,7 @@ knitr::opts_chunk$set(collapse = TRUE, message = FALSE, dpi = 300, fig.width = 7
 library(tidyverse)
 library(httr)
 library(lubridate)
+library(dplyr)
 ```
 
 # Create Dataset 
@@ -172,14 +173,9 @@ pop_file_retro =
 ```{r}
 ehsa_data = 
   final_df %>% 
-  select(modzcta, week_ending, testpos, casecount, testcount) %>% 
-  mutate(modzcta = as.character(modzcta))
+  select(modzcta, week_ending, testpos, casecount, testcount)
 
-  # mutate(
-    # casecount = round(casecount, digits = 0),
-    # testcount = round(testcount, digits = 0))
-
-write.csv(ehsa_data,"data/arcgis/ehsa_data.csv", row.names = TRUE)
+# write.csv(ehsa_data,"data/arcgis/ehsa_data.csv", row.names = TRUE)
 ```
 
 # Exploratory Data Analysis

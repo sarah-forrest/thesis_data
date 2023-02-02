@@ -2,7 +2,7 @@ NYC COVID-19 Test Positivity by Modified Zip Code Tabulation Area
 (modZCTA)
 ================
 Sarah Forrest
-02-01-2023
+02-02-2023
 
 # Create Dataset
 
@@ -166,14 +166,10 @@ pop_file_retro =
 ``` r
 ehsa_data = 
   final_df %>% 
-  select(modzcta, week_ending, testpos, casecount, testcount) %>% 
-  mutate(modzcta = as.character(modzcta))
+  mutate(modzcta_char = as.character(modzcta)) %>% 
+  select(modzcta, modzcta_char, week_ending, testpos, casecount, testcount)
 
-  # mutate(
-    # casecount = round(casecount, digits = 0),
-    # testcount = round(testcount, digits = 0))
-
-write.csv(ehsa_data,"data/arcgis/ehsa_data.csv", row.names = TRUE)
+# write.csv(ehsa_data,"data/arcgis/ehsa_data.csv", row.names = TRUE)
 ```
 
 # Exploratory Data Analysis
