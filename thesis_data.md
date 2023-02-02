@@ -166,8 +166,7 @@ pop_file_retro =
 ``` r
 ehsa_data = 
   final_df %>% 
-  mutate(modzcta_char = as.character(modzcta)) %>% 
-  select(modzcta, modzcta_char, week_ending, testpos, casecount, testcount)
+  select(modzcta, week_ending, testpos, casecount, testcount)
 
 # write.csv(ehsa_data,"data/arcgis/ehsa_data.csv", row.names = TRUE)
 ```
